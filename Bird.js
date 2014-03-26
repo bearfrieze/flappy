@@ -1,10 +1,11 @@
-function Bird(location, radius) {
+function Bird(location, velocity, radius, gravity) {
 
 	this.location = location;
+	this.velocity = velocity;
 	this.radius = radius;
+	this.gravity = gravity;
 
 	this.draw = function(context) {
-		context.fillStyle = 'white';
 		context.beginPath();
 		context.arc(
 			Math.round(location.x), Math.round(location.y), // Center
@@ -13,5 +14,18 @@ function Bird(location, radius) {
 		);
 		context.closePath();
 		context.fill();
+	}
+
+	this.step = function() {
+		this.velocity.add(this.gravity);
+		this.location.add(this.velocity);
+	}
+
+	this.flap = function() {
+		this.velocity.y = -this.gravity.y * 35;
+	}
+
+	this.reverse = function() {
+		this.velocity.x = -this.velocity.x;
 	}
 };

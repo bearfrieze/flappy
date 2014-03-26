@@ -7,11 +7,11 @@ document.body.appendChild(flappy.canvas);
 flappy.draw();
 
 // Loop
-// function loop(stamp) {
-// 	flappy.step();
-// 	flappy.draw();
-// 	requestAnimationFrame(loop);
-// }
+function loop(stamp) {
+	flappy.step();
+	flappy.draw();
+	requestAnimationFrame(loop);
+}
 
 // Begin
-// requestAnimationFrame(loop);
+requestAnimationFrame(loop);
