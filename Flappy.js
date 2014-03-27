@@ -20,13 +20,13 @@ function Flappy(width, height) {
 
 	// Bird
 	var location = new Vector(width / 2, height / 2);
-	var velocity = new Vector(width / 200, 0);
+	var velocity = new Vector(width / 150, 0);
 	var gravity = new Vector(0, height / 2000);
 	var bird = this.bird = new Bird(location, velocity, width / 50, gravity);
 
 	// Barriers
 	var barrierWidth = width / 50;
-	var barrierHeight = height / 5;
+	var barrierHeight = height / 3;
 	var leftBarrier = this.leftBarrier = new Barrier(
 		new Vector(0, height / 2),
 		barrierWidth, barrierHeight
@@ -60,8 +60,8 @@ function Flappy(width, height) {
 			return;
 		}
 		// Left and right collision
-		var leftCollision = bird.location.x - bird.radius <= 0;
-		var rightCollision = bird.location.x + bird.radius >= this.width;
+		var leftCollision = bird.location.x - bird.radius <= 0 && bird.velocity.x < 0;
+		var rightCollision = bird.location.x + bird.radius >= this.width && bird.velocity.x > 0;
 		if (leftCollision || rightCollision) {
 			var leftBarrierCollision = leftCollision && leftBarrier.colliding(bird);
 			var rightBarrierCollision = rightCollision && rightBarrier.colliding(bird);
@@ -72,6 +72,8 @@ function Flappy(width, height) {
 			bird.reverse();
 			this.score++;
 		}
+		if (leftCollision) rightBarrier.random(0, height);
+		if (rightCollision) leftBarrier.random(0, height);
 		// Apply veclocity
 		bird.step((Date.now() - this.lastStep) / (1000 / 60));
 		this.lastStep = Date.now();

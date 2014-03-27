@@ -17,7 +17,6 @@ function Bird(location, velocity, radius, gravity) {
 	}
 
 	this.step = function(frames) {
-		console.log(frames);
 		this.velocity.add(this.gravity.copy().mult(frames));
 		this.location.add(this.velocity.copy().mult(frames));
 	}

@@ -21,4 +21,10 @@ function Barrier(center, width, height) {;
 		var below = bird.location.y > this.center.y + this.height / 2;
 		return !above && !below;
 	};
+
+	this.random = function(min, max) {
+		min += height / 2;
+		max -= height;
+		this.center.y = min + Math.random() * max;
+	}
 }
