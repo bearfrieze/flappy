@@ -3,6 +3,7 @@ function Flappy(width, height) {
 	this.width = width;
 	this.height = height;
 	this.score = 0;
+	this.lastStep = Date.now();
 
 	// Canvas
 	var canvas = this.canvas = document.createElement('canvas');
@@ -72,7 +73,8 @@ function Flappy(width, height) {
 			this.score++;
 		}
 		// Apply veclocity
-		bird.step();
+		bird.step((Date.now() - this.lastStep) / (1000 / 60));
+		this.lastStep = Date.now();
 	}
 
 	this.reset = function() {
