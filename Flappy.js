@@ -15,6 +15,8 @@ function Flappy(width, height) {
 	// Context
 	var context = this.context = canvas.getContext('2d');
 	context.fillStyle = 'white';
+	context.strokeStyle = 'white';
+	context.lineWidth = '2';
 	context.textAlign = 'center';
 	context.font = '50px Menlo, monospace';
 
@@ -74,7 +76,7 @@ function Flappy(width, height) {
 		}
 		if (leftCollision) rightBarrier.random(0, height);
 		if (rightCollision) leftBarrier.random(0, height);
-		// Apply veclocity
+		// Step bird
 		bird.step((Date.now() - this.lastStep) / (1000 / 60));
 		this.lastStep = Date.now();
 	}
