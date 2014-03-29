@@ -10,7 +10,6 @@ function Flappy(width, height) {
 	canvas.width = this.width;
 	canvas.height = this.height;
 	canvas.style.background = '#333';
-	canvas.style.border = "1px solid #FFF";
 	
 	// Context
 	var context = this.context = canvas.getContext('2d');
@@ -49,13 +48,19 @@ function Flappy(width, height) {
 	this.draw = function() {
 		var context = this.context;
 		context.clearRect(0, 0, this.width, this.height);
+		// Border
+		context.beginPath();
+		context.rect(0.5, 0.5, this.width - 1, this.height - 1);
+		context.closePath();
+		context.stroke();
 		// Score
 		context.fillText('SCORE: ' + this.score + ', BEST: ?', 5, 5);
 		// Mirror-line
 		context.beginPath();
-		context.setLineDash([this.width / 50]);
-		context.moveTo(0, this.height / 2);
-		context.lineTo(this.width, this.height / 2);
+		var y = Math.floor(this.height / 2) + 0.5;
+		context.moveTo(0, y);
+		context.lineTo(this.width, y);
+		context.closePath();
 		context.stroke();
 		// Objects
 		this.bird.draw(context);

@@ -1,13 +1,13 @@
 function Barrier(x, width, height) {;
 
 	this.location = new Vector(x, 0);
-	this.width = width;
-	this.height = height;
+	this.width = Math.round(width);
+	this.height = Math.round(height);
 
 	this.random = function(min, max) {
 		min += height / 2;
 		max -= height;
-		this.location.y = min + Math.random() * max;
+		this.location.y = Math.round(min + Math.random() * max);
 	}
 
 	this.draw = function(context) {
