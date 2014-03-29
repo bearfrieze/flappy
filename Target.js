@@ -6,7 +6,6 @@ function Target(radius) {
 	this.random = function(width, height) {
 		this.location.x = radius + Math.random() * (width - radius * 2);
 		this.location.y = radius + Math.random() * (height - radius * 2);
-		console.log(this.location);
 	}
 
 	this.draw = function(context) {

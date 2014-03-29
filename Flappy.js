@@ -21,11 +21,11 @@ function Flappy(width, height) {
 	context.font = '50px Menlo, monospace';
 
 	// Bird
-	var location = new Vector(width / 2, height / 2);
+	var location = new Vector(width / 2, height * 0.4);
 	var velocity = new Vector(width / 150, 0);
 	var radius = width / 50;
 	var gravity = new Vector(0, height / 2000);
-	var bird = this.bird = new Bird(location, velocity, radius, gravity);
+	var bird = this.bird = new Bird(location, velocity, radius, gravity, this);
 
 	// Barriers
 	var barrierWidth = width / 50;
@@ -36,7 +36,7 @@ function Flappy(width, height) {
 	rightBarrier.random(0, height);
 
 	// Target
-	var radius = width / 30;
+	var radius = width / 20;
 	var target = this.target = new Target(radius);
 	target.random(width, height);
 
@@ -84,14 +84,19 @@ function Flappy(width, height) {
 			this.score++;
 		}
 		// Step bird
-		bird.step((Date.now() - this.lastStep) / (1000 / 60));
+		var frames = (Date.now() - this.lastStep) / (1000 / 60);
+		bird.step(frames, this.height);
 		this.lastStep = Date.now();
 	}
 
 	this.reset = function() {
+		// Reset and prepare for new game
 		this.score = 0;
 		this.bird.location.x = this.width / 2;
-		this.bird.location.y = this.height / 2;
+		this.bird.location.y = this.height * 0.4;
 		this.bird.velocity.y = 0;
+		this.leftBarrier.random(0, this.height);
+		this.rightBarrier.random(0, this.height);
+		this.target.random(this.width, this.height);
 	}
 }

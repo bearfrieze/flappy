@@ -1,9 +1,10 @@
-function Bird(location, velocity, radius, gravity) {
+function Bird(location, velocity, radius, gravity, flappy) {
 
 	this.location = location;
 	this.velocity = velocity;
 	this.radius = radius;
 	this.gravity = gravity;
+	this.flappy = flappy;
 	this.lastFlap = 0;
 
 	this.draw = function(context) {
@@ -20,16 +21,27 @@ function Bird(location, velocity, radius, gravity) {
 	}
 
 	this.step = function(frames) {
-		this.velocity.add(this.gravity.copy().mult(frames));
-		this.location.add(this.velocity.copy().mult(frames));
+		// Apply gravity to velocity
+		var gravity = this.gravity.copy().mult(frames);
+		if (this.below()) gravity.flipY();
+		this.velocity.add(gravity);
+		// Apply velocity to location
+		var velocity = this.velocity.copy().mult(frames);
+		this.location.add(velocity);
 	}
 
 	this.flap = function() {
-		this.velocity.y = -this.gravity.y * 35;
+		var strength = -this.gravity.y * 25;
+		if (this.below()) strength = -strength;
+		this.velocity.y = strength;
 		this.lastFlap = Date.now();
 	}
 
 	this.reverse = function() {
 		this.velocity.x = -this.velocity.x;
+	}
+
+	this.below = function() {
+		return this.location.y > this.flappy.height / 2;
 	}
 }
