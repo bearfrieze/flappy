@@ -15,7 +15,13 @@ function Vector(x, y) {
 		return this;
 	}
 
+	this.dist = function(vector) {
+		var dx = this.x - vector.x;
+		var dy = this.y - vector.y;
+		return Math.sqrt(dx * dx + dy * dy);
+	}
+
 	this.copy = function() {
 		return new Vector(this.x, this.y);
 	}
-};
+}
