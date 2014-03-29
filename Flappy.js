@@ -16,9 +16,10 @@ function Flappy(width, height) {
 	var context = this.context = canvas.getContext('2d');
 	context.fillStyle = 'white';
 	context.strokeStyle = 'white';
-	context.lineWidth = '2';
-	context.textAlign = 'center';
-	context.font = '50px Menlo, monospace';
+	context.lineWidth = '1';
+	context.textAlign = 'left';
+	context.textBaseline = 'top';
+	context.font = '14px Menlo, monospace';
 
 	// Bird
 	var location = new Vector(width / 2, height * 0.4);
@@ -48,8 +49,16 @@ function Flappy(width, height) {
 	this.draw = function() {
 		var context = this.context;
 		context.clearRect(0, 0, this.width, this.height);
+		// Score
+		context.fillText('SCORE: ' + this.score + ', BEST: ?', 5, 5);
+		// Mirror-line
+		context.beginPath();
+		context.setLineDash([this.width / 50]);
+		context.moveTo(0, this.height / 2);
+		context.lineTo(this.width, this.height / 2);
+		context.stroke();
+		// Objects
 		this.bird.draw(context);
-		context.fillText(this.score, this.width / 2, this.height / 2);
 		this.leftBarrier.draw(context);
 		this.rightBarrier.draw(context);
 		this.target.draw(context);
