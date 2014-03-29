@@ -55,11 +55,15 @@ function Flappy(width, height) {
 		context.stroke();
 		// Score
 		context.fillText('SCORE: ' + this.score + ', BEST: ?', 5, 5);
-		// Mirror-line
-		context.beginPath();
+		// Mirror-line, dashed
+		var step = this.width / 50;
 		var y = Math.floor(this.height / 2) + 0.5;
-		context.moveTo(0, y);
-		context.lineTo(this.width, y);
+		var x = -step;
+		context.beginPath();
+		while (x < this.width) {
+			context.moveTo(x += step, y);
+			context.lineTo(x += step, y);
+		}
 		context.closePath();
 		context.stroke();
 		// Objects
