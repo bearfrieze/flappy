@@ -4,6 +4,7 @@ function Flappy(width, height) {
 	this.height = height;
 	this.score = 0;
 	this.lastStep = Date.now();
+	this.highscore = 0;
 
 	// Canvas
 	var canvas = this.canvas = document.createElement('canvas');
@@ -54,7 +55,7 @@ function Flappy(width, height) {
 		context.closePath();
 		context.stroke();
 		// Score
-		context.fillText('SCORE: ' + this.score + ', BEST: ?', 5, 5);
+		context.fillText('SCORE: ' + this.score + ', BEST: ' + this.highscore, 5, 5);
 		// Mirror-line, dashed
 		var step = this.width / 50;
 		var y = Math.floor(this.height / 2) + 0.5;
@@ -108,6 +109,11 @@ function Flappy(width, height) {
 	}
 
 	this.reset = function() {
+		// Save highscore
+		if (this.score > this.highscore) {
+			this.setCookie('highscore', this.score, 365);
+			this.highscore = this.score;
+		}
 		// Reset and prepare for new game
 		this.score = 0;
 		this.bird.location.x = this.width / 2;
@@ -117,4 +123,24 @@ function Flappy(width, height) {
 		this.rightBarrier.random(0, this.height);
 		this.target.random(this.width, this.height);
 	}
+
+	this.setCookie = function(cname, cvalue, exdays) {
+		var d = new Date();
+		d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+		var expires = 'expires=' + d.toGMTString();
+		document.cookie = cname + '=' + cvalue + '; ' + expires;
+	}
+
+	this.getCookie = function(cname) {
+		var name = cname + '=';
+		var ca = document.cookie.split(';');
+		for(var i = 0; i < ca.length; i++) {
+			var c = ca[i].trim();
+			if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+		}
+		return '';
+	}
+
+	// Highscore
+	this.highscore = this.getCookie('highscore');
 }
