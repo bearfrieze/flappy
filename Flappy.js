@@ -142,5 +142,6 @@ function Flappy(width, height) {
 	}
 
 	// Highscore
-	this.highscore = this.getCookie('highscore');
+	var highscore = this.getCookie('highscore');
+	if (highscore != '') this.highscore = highscore;
 }
