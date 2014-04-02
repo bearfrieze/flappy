@@ -31,24 +31,27 @@ function Flappy(width, height) {
 	// Barriers
 	var barrierHeight = height / 3;
 	var barrierThickness = width / 50;
-	var leftBarrier = this.leftBarrier = new Barrier(
-		new Vector(0, 0),
-		new Vector(barrierThickness, barrierHeight)
-	);
-	var rightBarrier = this.rightBarrier = new Barrier(
-		new Vector(this.width - barrierThickness, 0),
-		new Vector(this.width, barrierHeight)
-	);
-	var topBarrier = this.topBarrier = new Barrier(
-		new Vector(0, 0),
-		new Vector(this.width, barrierThickness)
-	);
-	var bottomBarrier = this.bottomBarrier = new Barrier(
-		new Vector(0, this.height - barrierThickness),
-		new Vector(this.width, this.height)
-	);
-	leftBarrier.randomY(0, height);
-	rightBarrier.randomY(0, height);
+	var barriers = {
+		left: new Barrier(
+			new Vector(0, 0),
+			new Vector(barrierThickness, barrierHeight)
+		),
+		right: new Barrier(
+			new Vector(this.width - barrierThickness, 0),
+			new Vector(this.width, barrierHeight)
+		),
+		top: new Barrier(
+			new Vector(0, 0),
+			new Vector(this.width, barrierThickness)
+		),
+		bottom: this.bottomBarrier = new Barrier(
+			new Vector(0, this.height - barrierThickness),
+			new Vector(this.width, this.height)
+		)
+	};
+	barriers.left.randomY(0, height);
+	barriers.right.randomY(0, height);
+	this.barriers = barriers;
 
 	// Target
 	var radius = width / 20;
@@ -86,31 +89,26 @@ function Flappy(width, height) {
 		context.stroke();
 		// Objects
 		this.bird.draw(context);
-		this.leftBarrier.draw(context);
-		this.rightBarrier.draw(context);
-		this.topBarrier.draw(context);
-		this.bottomBarrier.draw(context);
+		for (var barrier in this.barriers)
+			this.barriers[barrier].draw(context);
 		this.target.draw(context);
 	}
 
 	this.step = function() {
 		var bird = this.bird;
 		// Barrier collision
-		if (
-			leftBarrier.colliding(bird)
-			|| rightBarrier.colliding(bird)
-			|| topBarrier.colliding(bird)
-			|| bottomBarrier.colliding(bird)
-		) {
-			this.reset();
-			return;
+		for (var barrier in this.barriers) {
+			if (this.barriers[barrier].colliding(bird)) {
+				this.reset();
+				return;
+			}
 		}
 		// Left and right collision
 		var leftCollision = bird.location.x - bird.radius <= 0 && bird.velocity.x < 0;
 		var rightCollision = bird.location.x + bird.radius >= this.width && bird.velocity.x > 0;
 		if (leftCollision || rightCollision) bird.reverse();
-		if (leftCollision) rightBarrier.randomY(0, this.height);
-		if (rightCollision) leftBarrier.randomY(0, this.height);
+		if (leftCollision) this.barriers.right.randomY(0, this.height);
+		if (rightCollision) this.barriers.left.randomY(0, this.height);
 		// Taget collision
 		if (this.target.colliding(this.bird)) {
 			this.target.random(this.width, this.height);
@@ -133,8 +131,8 @@ function Flappy(width, height) {
 		this.bird.location.x = this.width / 2;
 		this.bird.location.y = this.height * 0.4;
 		this.bird.velocity.y = 0;
-		this.leftBarrier.randomY(0, this.height);
-		this.rightBarrier.randomY(0, this.height);
+		this.barriers.left.randomY(0, this.height);
+		this.barriers.right.randomY(0, this.height);
 		this.target.random(this.width, this.height);
 	}
 
