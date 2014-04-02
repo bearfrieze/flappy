@@ -2,6 +2,7 @@ function Flappy(width, height) {
 	
 	this.width = width;
 	this.height = height;
+	this.barrierThickness = width / 50;
 	this.score = 0;
 	this.lastStep = Date.now();
 	this.highscore = 0;
@@ -29,10 +30,9 @@ function Flappy(width, height) {
 	var bird = this.bird = new Bird(location, velocity, radius, gravity, this);
 
 	// Barriers
-	var barrierWidth = width / 50;
 	var barrierHeight = height / 3;
-	var leftBarrier = this.leftBarrier = new Barrier(0, barrierWidth, barrierHeight);
-	var rightBarrier = this.rightBarrier = new Barrier(width, barrierWidth, barrierHeight);
+	var leftBarrier = this.leftBarrier = new Barrier(0, this.barrierThickness, barrierHeight);
+	var rightBarrier = this.rightBarrier = new Barrier(width, this.barrierThickness, barrierHeight);
 	leftBarrier.random(0, height);
 	rightBarrier.random(0, height);
 
@@ -49,11 +49,20 @@ function Flappy(width, height) {
 	this.draw = function() {
 		var context = this.context;
 		context.clearRect(0, 0, this.width, this.height);
-		// Border
+		// Border left and right
 		context.beginPath();
-		context.rect(0.5, 0.5, this.width - 1, this.height - 1);
+		context.moveTo(0.5, 0.5);
+		context.lineTo(0.5, this.height);
+		context.moveTo(this.width - 0.5, 0.5);
+		context.lineTo(this.width - 0.5, this.height);
 		context.closePath();
 		context.stroke();
+		// Barrier top and bottom
+		context.beginPath();
+		context.rect(0, 0, this.width, this.barrierThickness);
+		context.rect(0, this.height - this.barrierThickness, this.width, this.barrierThickness);
+		context.closePath();
+		context.fill();
 		// Score
 		context.fillText('SCORE: ' + this.score + ', BEST: ' + this.highscore, 5, 5);
 		// Mirror-line, dashed
