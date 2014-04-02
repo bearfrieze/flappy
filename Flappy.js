@@ -17,9 +17,6 @@ function Flappy(width, height) {
 	context.fillStyle = 'white';
 	context.strokeStyle = 'white';
 	context.lineWidth = '1';
-	context.textAlign = 'left';
-	context.textBaseline = 'top';
-	context.font = '14px Menlo, monospace';
 
 	// Bird
 	var location = new Vector(width / 2, height * 0.4);
@@ -29,8 +26,8 @@ function Flappy(width, height) {
 	var bird = this.bird = new Bird(location, velocity, radius, gravity, this);
 
 	// Barriers
-	var barrierHeight = height / 3;
-	var barrierThickness = width / 10;
+	var barrierHeight = Math.round(height / 3);
+	var barrierThickness = Math.round(width / 70);
 	var barriers = {
 		left: new Barrier(
 			new Vector(0, 0),
@@ -64,8 +61,10 @@ function Flappy(width, height) {
 	});
 
 	this.draw = function() {
+
 		var context = this.context;
 		context.clearRect(0, 0, this.width, this.height);
+
 		// Border left and right
 		context.beginPath();
 		context.moveTo(0.5, 0.5);
@@ -74,8 +73,13 @@ function Flappy(width, height) {
 		context.lineTo(this.width - 0.5, this.height);
 		context.closePath();
 		context.stroke();
+
 		// Score
-		context.fillText('SCORE: ' + this.score + ', BEST: ' + this.highscore, 5, 5);
+		context.font =  width / 15 + 'px Menlo, monospace';
+		context.textAlign = 'center';
+		context.textBaseline = 'bottom';
+		context.fillText(this.score + "/" + this.highscore, this.width / 2, this.height / 5);
+
 		// Mirror-line, dashed
 		var step = this.width / 50;
 		var y = Math.floor(this.height / 2) + 0.5;
@@ -87,6 +91,7 @@ function Flappy(width, height) {
 		}
 		context.closePath();
 		context.stroke();
+
 		// Objects
 		this.bird.draw(context);
 		for (var barrier in this.barriers)
@@ -95,7 +100,9 @@ function Flappy(width, height) {
 	}
 
 	this.step = function() {
+
 		var bird = this.bird;
+
 		// Barrier collision
 		for (var barrier in this.barriers) {
 			if (this.barriers[barrier].colliding(bird)) {
@@ -103,29 +110,34 @@ function Flappy(width, height) {
 				return;
 			}
 		}
+
 		// Left and right collision
 		var leftCollision = bird.location.x - bird.radius <= 0 && bird.velocity.x < 0;
 		var rightCollision = bird.location.x + bird.radius >= this.width && bird.velocity.x > 0;
 		if (leftCollision || rightCollision) bird.reverse();
 		if (leftCollision) this.barriers.right.randomY(0, this.height);
 		if (rightCollision) this.barriers.left.randomY(0, this.height);
+
 		// Taget collision
 		if (this.target.colliding(this.bird)) {
 			this.target.random(this.width, this.height);
 			this.score++;
 		}
+		
 		// Step bird
 		var frames = (Date.now() - this.lastStep) / (1000 / 60);
-		bird.step(frames, this.height);
+		bird.step(frames);
 		this.lastStep = Date.now();
 	}
 
 	this.reset = function() {
+
 		// Save highscore
 		if (this.score > this.highscore) {
 			this.setCookie('highscore', this.score, 365);
 			this.highscore = this.score;
 		}
+
 		// Reset and prepare for new game
 		this.score = 0;
 		this.bird.location.x = this.width / 2;

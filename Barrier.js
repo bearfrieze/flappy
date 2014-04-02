@@ -24,6 +24,9 @@ function Barrier(start, stop) {
 	}
 
 	this.colliding = function(bird) {
+
+		// Using this method: http://stackoverflow.com/a/402010
+
 		var circle = bird;
 		var center = this.start.copy().add(this.stop).div(2);
 		var distance = circle.location.copy().sub(center).abs();

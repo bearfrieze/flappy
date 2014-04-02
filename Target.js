@@ -11,9 +11,9 @@ function Target(radius) {
 	this.draw = function(context) {
 		context.beginPath();
 		context.arc(
-			Math.round(this.location.x), Math.round(this.location.y), // Center
+			Math.round(this.location.x), Math.round(this.location.y),
 			this.radius,
-			0, 2 * Math.PI // Start and stop angles
+			0, 2 * Math.PI
 		);
 		context.closePath();
 		context.fill();

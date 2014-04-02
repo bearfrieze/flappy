@@ -12,19 +12,21 @@ function Bird(location, velocity, radius, gravity, flappy) {
 		var flapShrink = 0;
 		if (Date.now() - this.lastFlap < 100) flapShrink -= radius * 0.15;
 		context.arc(
-			Math.round(this.location.x), Math.round(this.location.y), // Center
+			Math.round(this.location.x), Math.round(this.location.y),
 			this.radius + flapShrink,
-			0, 2 * Math.PI // Start and stop angles
+			0, 2 * Math.PI
 		);
 		context.closePath();
 		context.fill();
 	}
 
 	this.step = function(frames) {
+
 		// Apply gravity to velocity
 		var gravity = this.gravity.copy().mult(frames);
 		if (this.below()) gravity.flipY();
 		this.velocity.add(gravity);
+
 		// Apply velocity to location
 		var velocity = this.velocity.copy().mult(frames);
 		this.location.add(velocity);
