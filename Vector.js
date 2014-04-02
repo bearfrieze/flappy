@@ -15,9 +15,15 @@ function Vector(x, y) {
 		return this;
 	}
 
-	this.mult = function(scalar) {
-		this.x *= scalar;
-		this.y *= scalar;
+	this.mult = function(multiplier) {
+		this.x *= multiplier;
+		this.y *= multiplier;
+		return this;
+	}
+
+	this.div = function(divisor) {
+		this.x /= divisor;
+		this.y /= divisor;
 		return this;
 	}
 
@@ -29,6 +35,12 @@ function Vector(x, y) {
 
 	this.flipY = function() {
 		this.y = -this.y;
+		return this;
+	}
+
+	this.abs = function() {
+		this.x = Math.abs(this.x);
+		this.y = Math.abs(this.y);
 		return this;
 	}
 

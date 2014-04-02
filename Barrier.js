@@ -25,28 +25,20 @@ function Barrier(start, stop) {
 
 	this.colliding = function(bird) {
 		var circle = bird;
-		var center = new Vector(
-			(this.start.x + this.stop.x) / 2,
-			(this.start.y + this.stop.y) / 2
-		);
-		var distance = new Vector(
-			Math.abs(circle.location.x - center.x),
-			Math.abs(circle.location.y - center.y)
-		);
-
-		var width = this.stop.x - this.start.x;
-		var height = this.stop.y - this.start.y;
+		var center = this.start.copy().add(this.stop).div(2);
+		var distance = circle.location.copy().sub(center).abs();
+		var dimensions = this.stop.copy().sub(this.start);
 
 		// Return false if circle is outside of rectangle
-	    if (distance.x > (width / 2) + circle.radius) return false;
-	    if (distance.y > (height / 2) + circle.radius) return false;
+	    if (distance.x > (dimensions.x / 2) + circle.radius) return false;
+	    if (distance.y > (dimensions.y / 2) + circle.radius) return false;
 
 	    // Return true if circle center is inside of rectangle
-	    if (distance.x <= width / 2) return true; 
-	    if (distance.y <= height / 2) return true;
+	    if (distance.x <= dimensions.x / 2) return true;
+	    if (distance.y <= dimensions.y / 2) return true;
 
 	    // Check wether circle is in reach of corners
-	    cornerDistance = Math.sqrt(Math.pow(distance.x - (width / 2), 2) + Math.pow(distance.y - (height / 2), 2));
-	    return cornerDistance <= Math.pow(circle.radius, 2);
+	    var cornerDistance = distance.dist(dimensions.copy().div(2));
+	    return cornerDistance <= circle.radius;
 	}
 }

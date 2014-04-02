@@ -30,7 +30,7 @@ function Flappy(width, height) {
 
 	// Barriers
 	var barrierHeight = height / 3;
-	var barrierThickness = width / 50;
+	var barrierThickness = width / 10;
 	var barriers = {
 		left: new Barrier(
 			new Vector(0, 0),
