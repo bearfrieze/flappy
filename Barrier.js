@@ -2,26 +2,17 @@ function Barrier(start, stop) {
 
 	this.start = start;
 	this.stop = stop;
-	this.stepSize = 0;
-	this.stepRemaining = 0;
+	this.destination = start.y;
 
 	this.randomY = function(min, max) {
 		var height = this.stop.y - this.start.y;
-		var random = Math.round(min + Math.random() * ((max - height) - min));
-		var delta = this.start.y - random;
-		this.stepSize = max / 100;
-		if (delta < 0) this.stepSize = -this.stepSize;
-		this.stepRemaining = Math.abs(delta / this.stepSize);
-		console.log(this.stepRemaining);
+		this.destination = Math.round(min + Math.random() * ((max - height) - min));
 	}
 
-	this.step = function(frames) { 
-		if (this.stepRemaining > 0) {
-			if (frames > this.stepRemaining) frames = this.stepRemaining;
-			this.start.y -= this.stepSize * frames;
-			this.stop.y -= this.stepSize * frames;
-			this.stepRemaining -= frames;
-		}
+	this.step = function(frames) {
+		var movement = (this.destination - this.start.y) / 30 * frames;
+		this.start.y += movement;
+		this.stop.y += movement;
 	}
 
 	this.draw = function(context) {
