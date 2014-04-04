@@ -10,7 +10,7 @@ function Bird(location, velocity, radius, gravity, flappy) {
 	this.draw = function(context) {
 		context.beginPath();
 		var flapShrink = 0;
-		if (Date.now() - this.lastFlap < 100) flapShrink -= radius * 0.15;
+		if (Date.now() - this.lastFlap < 100) flapShrink -= radius * 0.2;
 		context.arc(
 			Math.round(this.location.x), Math.round(this.location.y),
 			this.radius + flapShrink,

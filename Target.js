@@ -7,8 +7,6 @@ function Target(radius) {
 		var delta = stop.copy().sub(start);
 		this.location.x = start.x + this.radius + Math.random() * (delta.x - this.radius * 2);
 		this.location.y = start.y + this.radius + Math.random() * (delta.y - this.radius * 2);
-		// this.location.x = radius + Math.random() * (width - radius * 2);
-		// this.location.y = radius + Math.random() * (height - radius * 2);
 	}
 
 	this.draw = function(context) {

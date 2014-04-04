@@ -3,8 +3,8 @@ function Flappy(width, height) {
 	this.width = width;
 	this.height = height;
 	this.score = 0;
+	this.highscore = -1;
 	this.lastStep = Date.now();
-	this.highscore = 0;
 
 	// Canvas
 	var canvas = this.canvas = document.createElement('canvas');
@@ -46,14 +46,10 @@ function Flappy(width, height) {
 			new Vector(this.width, this.height)
 		)
 	};
-	barriers.left.randomY(0, height);
-	barriers.right.randomY(0, height);
 	this.barriers = barriers;
 
 	// Target
-	var radius = width / 20;
-	var target = this.target = new Target(radius);
-	target.random(new Vector(0, 0), new Vector(this.width, this.height));
+	var target = this.target = new Target(width / 20);
 
 	// Keyboard listener
 	document.addEventListener('keydown', function(event) {
@@ -115,8 +111,8 @@ function Flappy(width, height) {
 		var leftCollision = bird.location.x - bird.radius <= 0 && bird.velocity.x < 0;
 		var rightCollision = bird.location.x + bird.radius >= this.width && bird.velocity.x > 0;
 		if (leftCollision || rightCollision) bird.reverse();
-		if (leftCollision) this.barriers.right.randomY(0, this.height);
-		if (rightCollision) this.barriers.left.randomY(0, this.height);
+		if (leftCollision) this.barriers.left.randomY(0, this.height);
+		if (rightCollision) this.barriers.right.randomY(0, this.height);
 
 		// Taget collision
 		if (this.target.colliding(bird)) {
@@ -133,16 +129,24 @@ function Flappy(width, height) {
 			this.score++;
 		}
 		
-		// Step bird
 		var frames = (Date.now() - this.lastStep) / (1000 / 60);
-		bird.step(frames);
 		this.lastStep = Date.now();
+
+		// Step bird
+		bird.step(frames);
+
+		// Step barriers
+		this.barriers.left.step(frames);
+		this.barriers.right.step(frames);
 	}
 
 	this.reset = function() {
 
-		// Save highscore
-		if (this.score > this.highscore) {
+		// Highscore
+		if (this.highscore === -1) {
+			this.highscore = this.getCookie('highscore');
+			if (this.highscore === '') this.highscore = 0;
+		} else if (this.score > this.highscore) {
 			this.setCookie('highscore', this.score, 365);
 			this.highscore = this.score;
 		}
@@ -174,7 +178,5 @@ function Flappy(width, height) {
 		return '';
 	}
 
-	// Highscore
-	var highscore = this.getCookie('highscore');
-	if (highscore != '') this.highscore = highscore;
+	this.reset();
 }
