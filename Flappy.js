@@ -111,8 +111,8 @@ function Flappy(width, height) {
 		var leftCollision = bird.location.x - bird.radius <= 0 && bird.velocity.x < 0;
 		var rightCollision = bird.location.x + bird.radius >= this.width && bird.velocity.x > 0;
 		if (leftCollision || rightCollision) bird.reverse();
-		if (leftCollision) this.barriers.left.randomY(0, this.height);
-		if (rightCollision) this.barriers.right.randomY(0, this.height);
+		if (leftCollision) this.barriers.right.randomY(0, this.height);
+		if (rightCollision) this.barriers.left.randomY(0, this.height);
 
 		// Taget collision
 		if (this.target.colliding(bird)) {

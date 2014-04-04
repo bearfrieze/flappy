@@ -6,7 +6,7 @@ function Barrier(start, stop) {
 
 	this.randomY = function(min, max) {
 		var height = this.stop.y - this.start.y;
-		this.destination = Math.round(min + Math.random() * ((max - height) - min));
+		this.destination = min + Math.random() * ((max - height) - min);
 	}
 
 	this.step = function(frames) {
