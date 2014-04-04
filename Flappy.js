@@ -53,7 +53,7 @@ function Flappy(width, height) {
 	// Target
 	var radius = width / 20;
 	var target = this.target = new Target(radius);
-	target.random(width, height);
+	target.random(new Vector(0, 0), new Vector(this.width, this.height));
 
 	// Keyboard listener
 	document.addEventListener('keydown', function(event) {
@@ -119,8 +119,17 @@ function Flappy(width, height) {
 		if (rightCollision) this.barriers.left.randomY(0, this.height);
 
 		// Taget collision
-		if (this.target.colliding(this.bird)) {
-			this.target.random(this.width, this.height);
+		if (this.target.colliding(bird)) {
+			if (bird.location.y < this.height / 2)
+				this.target.random(
+					new Vector(0, this.height / 2),
+					new Vector(this.width, this.height)
+				);
+			else
+				this.target.random(
+					new Vector(0, 0),
+					new Vector(this.width, this.height / 2)
+				);
 			this.score++;
 		}
 		
@@ -140,12 +149,12 @@ function Flappy(width, height) {
 
 		// Reset and prepare for new game
 		this.score = 0;
-		this.bird.location.x = this.width / 2;
+		bird.location.x = this.width / 2;
 		this.bird.location.y = this.height * 0.4;
 		this.bird.velocity.y = 0;
 		this.barriers.left.randomY(0, this.height);
 		this.barriers.right.randomY(0, this.height);
-		this.target.random(this.width, this.height);
+		this.target.random(new Vector(0, 0), new Vector(this.width, this.height));
 	}
 
 	this.setCookie = function(cname, cvalue, exdays) {

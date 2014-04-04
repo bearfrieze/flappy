@@ -3,9 +3,12 @@ function Target(radius) {
 	this.location = new Vector(0, 0);
 	this.radius = radius;
 
-	this.random = function(width, height) {
-		this.location.x = radius + Math.random() * (width - radius * 2);
-		this.location.y = radius + Math.random() * (height - radius * 2);
+	this.random = function(start, stop) {
+		var delta = stop.copy().sub(start);
+		this.location.x = start.x + this.radius + Math.random() * (delta.x - this.radius * 2);
+		this.location.y = start.y + this.radius + Math.random() * (delta.y - this.radius * 2);
+		// this.location.x = radius + Math.random() * (width - radius * 2);
+		// this.location.y = radius + Math.random() * (height - radius * 2);
 	}
 
 	this.draw = function(context) {
