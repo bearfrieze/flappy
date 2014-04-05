@@ -56,6 +56,17 @@ function Flappy(width, height) {
 	    if(event.keyCode == 32) bird.flap();
 	});
 
+	// Touch/click listener
+	if ('ontouchstart' in document.documentElement) {
+		canvas.addEventListener('touchstart', function(event) {
+			bird.flap();
+		}, false);
+	} else {
+		canvas.addEventListener('click', function(event) {
+			bird.flap();
+		}, false);
+	}
+
 	this.draw = function() {
 
 		var context = this.context;
