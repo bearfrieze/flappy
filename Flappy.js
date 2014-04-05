@@ -5,6 +5,8 @@ function Flappy(width, height) {
 	this.score = 0;
 	this.highscore = -1;
 	this.lastStep = Date.now();
+	this.particles = [];
+	this.gravity = new Vector(0, height / 2000);
 
 	// Canvas
 	var canvas = this.canvas = document.createElement('canvas');
@@ -22,8 +24,7 @@ function Flappy(width, height) {
 	var location = new Vector(width / 2, height * 0.4);
 	var velocity = new Vector(width / 150, 0);
 	var radius = width / 50;
-	var gravity = new Vector(0, height / 2000);
-	var bird = this.bird = new Bird(location, velocity, radius, gravity, this);
+	var bird = this.bird = new Bird(location, velocity, radius, this);
 
 	// Barriers
 	var barrierHeight = Math.round(height / 3);
@@ -104,6 +105,11 @@ function Flappy(width, height) {
 		for (var barrier in this.barriers)
 			this.barriers[barrier].draw(context);
 		this.target.draw(context);
+
+		// Particles
+		for (var i = 0; i < this.particles.length; i++) {
+			this.particles[i].draw(context);
+		}
 	}
 
 	this.step = function() {
@@ -149,6 +155,18 @@ function Flappy(width, height) {
 		// Step barriers
 		this.barriers.left.step(frames);
 		this.barriers.right.step(frames);
+
+		// Step particles
+		for (var i = this.particles.length - 1; i >= 0; i--) {
+			if (this.particles[i].alive())
+				this.particles[i].step(frames);
+			else
+				// Delete particle if dead
+				this.particles[i] = this.particles.pop();
+		}
+
+		// Add particle
+		this.particles.push(new Particle(bird.location.copy(), 2, this));
 	}
 
 	this.reset = function() {

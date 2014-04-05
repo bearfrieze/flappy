@@ -1,9 +1,8 @@
-function Bird(location, velocity, radius, gravity, flappy) {
+function Bird(location, velocity, radius, flappy) {
 
 	this.location = location;
 	this.velocity = velocity;
 	this.radius = radius;
-	this.gravity = gravity;
 	this.flappy = flappy;
 	this.lastFlap = 0;
 
@@ -23,7 +22,7 @@ function Bird(location, velocity, radius, gravity, flappy) {
 	this.step = function(frames) {
 
 		// Apply gravity to velocity
-		var gravity = this.gravity.copy().mult(frames);
+		var gravity = flappy.gravity.copy().mult(frames);
 		if (this.below()) gravity.flipY();
 		this.velocity.add(gravity);
 
@@ -33,7 +32,7 @@ function Bird(location, velocity, radius, gravity, flappy) {
 	}
 
 	this.flap = function() {
-		var strength = -this.gravity.y * 25;
+		var strength = -flappy.gravity.y * 25;
 		if (this.below()) strength = -strength;
 		this.velocity.y = strength;
 		this.lastFlap = Date.now();
