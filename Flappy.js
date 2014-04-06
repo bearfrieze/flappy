@@ -125,11 +125,10 @@ function Flappy(width, height) {
 		}
 
 		// Left and right collision
-		var leftCollision = bird.location.x - bird.radius <= 0 && bird.velocity.x < 0;
-		var rightCollision = bird.location.x + bird.radius >= this.width && bird.velocity.x > 0;
-		if (leftCollision || rightCollision) bird.reverse();
-		if (leftCollision) this.barriers.right.randomY(0, this.height);
-		if (rightCollision) this.barriers.left.randomY(0, this.height);
+		var collide = bird.sideCollide();
+		if (collide != 0) bird.reverse();
+		if (collide > 0) this.barriers.left.randomY(0, this.height);
+		if (collide < 0) this.barriers.right.randomY(0, this.height);
 
 		// Taget collision
 		var target = this.target;
@@ -174,9 +173,7 @@ function Flappy(width, height) {
 		var temp = null;
 		for (var i = this.particles.length - 1; i >= 0; i--) {
 			var particle = this.particles[i];
-			var leftCollision = particle.location.x - particle.radius <= 0 && particle.velocity.x < 0;
-			var rightCollision = particle.location.x + particle.radius >= this.width && particle.velocity.x > 0;
-			if (leftCollision || rightCollision) particle.reverse();
+			if (particle.sideCollide() != 0) particle.reverse();
 			if (particle.alive()) {
 				particle.step(frames);
 			} else {
