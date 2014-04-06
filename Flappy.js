@@ -62,7 +62,7 @@ function Flappy(width, height) {
 			bird.flap();
 		}, false);
 	} else {
-		canvas.addEventListener('click', function(event) {
+		canvas.addEventListener('mousedown', function(event) {
 			bird.flap();
 		}, false);
 	}
