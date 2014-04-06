@@ -17,6 +17,7 @@ function Bird(location, velocity, radius, flappy) {
 			0, 2 * Math.PI
 		);
 		context.closePath();
+		context.fillStyle = 'white';
 		context.fill();
 	}
 

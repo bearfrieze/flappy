@@ -7,6 +7,7 @@ function Target(radius) {
 		var delta = stop.copy().sub(start);
 		this.location.x = start.x + this.radius + Math.random() * (delta.x - this.radius * 2);
 		this.location.y = start.y + this.radius + Math.random() * (delta.y - this.radius * 2);
+		this.hue = Math.random() * 360;
 	}
 
 	this.draw = function(context) {
@@ -17,6 +18,7 @@ function Target(radius) {
 			0, 2 * Math.PI
 		);
 		context.closePath();
+		context.fillStyle = 'hsl(' + this.hue + ', 75%, 75%)';
 		context.fill();
 	}
 

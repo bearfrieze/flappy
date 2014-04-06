@@ -24,6 +24,7 @@ function Barrier(start, stop) {
 			this.stop.y - this.start.y
 		);
 		context.closePath();
+		context.fillStyle = 'white';
 		context.fill();
 	}
 

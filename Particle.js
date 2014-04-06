@@ -1,4 +1,4 @@
-function Particle(location, velocity, radius, lifespan, flappy) {
+function Particle(location, velocity, radius, lifespan, hue, flappy) {
 	
 	this.location = location;
 	this.velocity = velocity;
@@ -6,6 +6,7 @@ function Particle(location, velocity, radius, lifespan, flappy) {
 	this.timer = Date.now() + lifespan * 1000;
 	this.flappy = flappy;
 	this.mass = 0.25;
+	this.hue = hue;
 
 	this.draw = function(context) {
 		context.beginPath();
@@ -15,6 +16,7 @@ function Particle(location, velocity, radius, lifespan, flappy) {
 			0, 2 * Math.PI
 		);
 		context.closePath();
+		context.fillStyle = 'hsl(' + this.hue + ', 75%, 75%)';
 		context.fill();
 	}
 

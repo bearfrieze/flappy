@@ -16,7 +16,6 @@ function Flappy(width, height) {
 	
 	// Context
 	var context = this.context = canvas.getContext('2d');
-	context.fillStyle = 'white';
 	context.strokeStyle = 'white';
 	context.lineWidth = '1';
 
@@ -86,6 +85,7 @@ function Flappy(width, height) {
 		context.font =  width / 15 + 'px Menlo, monospace';
 		context.textAlign = 'center';
 		context.textBaseline = 'bottom';
+		context.fillStyle = 'white';
 		context.fillText(this.score + "/" + this.highscore, this.width / 2, this.height / 5);
 
 		// Mirror-line, dashed
@@ -134,13 +134,18 @@ function Flappy(width, height) {
 		var target = this.target;
 		if (target.colliding(bird)) {
 
+			this.score++;
+			var newHighscore = this.score === this.highscore + 1;
+
 			// Spawn particles
-			for (var i = 0; i < 20; i++) {
+			var n = (newHighscore) ? 90 : 30;
+			for (var i = 0; i < n; i++) {
 				var angle = (Math.random() * 360) * Math.PI / 180;
 				var speed = Math.random() * bird.radius * 0.5;
 				var velocity = new Vector(Math.cos(angle) * speed, Math.sin(angle) * speed);
 				var lifespan = 1.5 + Math.random() * 1;
-				var particle = new Particle(target.location.copy(), velocity, bird.radius / 4, lifespan, this);
+				var hue = (newHighscore) ? Math.random() * 360 : target.hue;
+				var particle = new Particle(target.location.copy(), velocity, bird.radius / 4, lifespan, hue, this);
 				this.particles.push(particle);
 			}
 
@@ -155,8 +160,6 @@ function Flappy(width, height) {
 					new Vector(0, 0),
 					new Vector(this.width, this.height / 2)
 				);
-
-			this.score++;
 		}
 		
 		var frames = (Date.now() - this.lastStep) / (1000 / 60);
