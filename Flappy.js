@@ -132,17 +132,31 @@ function Flappy(width, height) {
 		if (rightCollision) this.barriers.left.randomY(0, this.height);
 
 		// Taget collision
-		if (this.target.colliding(bird)) {
+		var target = this.target;
+		if (target.colliding(bird)) {
+
+			// Spawn particles
+			for (var i = 0; i < 20; i++) {
+				var angle = (Math.random() * 360) * Math.PI / 180;
+				var speed = Math.random() * bird.radius * 0.5;
+				var velocity = new Vector(Math.cos(angle) * speed, Math.sin(angle) * speed);
+				var lifespan = 1.5 + Math.random() * 1;
+				var particle = new Particle(target.location.copy(), velocity, bird.radius / 4, lifespan, this);
+				this.particles.push(particle);
+			}
+
+			// Random target location
 			if (bird.location.y < this.height / 2)
-				this.target.random(
+				target.random(
 					new Vector(0, this.height / 2),
 					new Vector(this.width, this.height)
 				);
 			else
-				this.target.random(
+				target.random(
 					new Vector(0, 0),
 					new Vector(this.width, this.height / 2)
 				);
+
 			this.score++;
 		}
 		
@@ -157,16 +171,20 @@ function Flappy(width, height) {
 		this.barriers.right.step(frames);
 
 		// Step particles
+		var temp = null;
 		for (var i = this.particles.length - 1; i >= 0; i--) {
-			if (this.particles[i].alive())
-				this.particles[i].step(frames);
-			else
+			var particle = this.particles[i];
+			var leftCollision = particle.location.x - particle.radius <= 0 && particle.velocity.x < 0;
+			var rightCollision = particle.location.x + particle.radius >= this.width && particle.velocity.x > 0;
+			if (leftCollision || rightCollision) particle.reverse();
+			if (particle.alive()) {
+				particle.step(frames);
+			} else {
 				// Delete particle if dead
-				this.particles[i] = this.particles.pop();
+				temp = this.particles.pop();
+				if (this.particles.length > 0) this.particles[i] = temp;
+			}
 		}
-
-		// Add particle
-		this.particles.push(new Particle(bird.location.copy(), 2, this));
 	}
 
 	this.reset = function() {
