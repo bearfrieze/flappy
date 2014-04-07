@@ -8,6 +8,28 @@ function Flappy(width, height) {
 	this.particles = [];
 	this.gravity = new Vector(0, height / 2000);
 
+	// Performance
+	var timers = this.timers = {
+		draw: [],
+		step: []
+	};
+	var performance = function(timers) {
+		for (var key in timers) {
+			// Compute 90th percentile average
+			var percentile = 0;
+			timers[key].sort(function(a,b){return b-a}); // Sort descending
+			var interval = Math.round(timers[key].length * 0.1);
+			for (var i = 0; i < interval; i++) percentile += timers[key][i];
+			percentile = (percentile / interval).toFixed(2);
+			// Compute accumulated
+			var accumulated = 0;
+			for (var i = 0; i < timers[key].length; i++) accumulated += timers[key][i];
+			// Output
+			console.log(key + ' | percentile: ' + percentile + ', accumulated: ' + accumulated);
+		}
+	};
+	setTimeout(function() {performance(timers)}, 10000);
+
 	// Canvas
 	var canvas = this.canvas = document.createElement('canvas');
 	canvas.width = this.width;
@@ -69,6 +91,8 @@ function Flappy(width, height) {
 
 	this.draw = function() {
 
+		var timer = Date.now();
+
 		var context = this.context;
 		context.clearRect(0, 0, this.width, this.height);
 
@@ -110,9 +134,13 @@ function Flappy(width, height) {
 		for (var i = 0; i < this.particles.length; i++) {
 			this.particles[i].draw(context);
 		}
+
+		this.timers.draw.push(Date.now() - timer);
 	}
 
 	this.step = function() {
+
+		var timer = Date.now();
 
 		var bird = this.bird;
 
@@ -185,6 +213,8 @@ function Flappy(width, height) {
 				if (this.particles.length > 0) this.particles[i] = temp;
 			}
 		}
+
+		this.timers.step.push(Date.now() - timer);
 	}
 
 	this.reset = function() {
