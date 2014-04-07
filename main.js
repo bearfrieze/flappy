@@ -4,8 +4,8 @@ window.onload = function() {
 	document.body.style.background = '#333';
 
 	// Game dimensions
-	var width = window.innerWidth || document.body.clientWidth;
-	var height = window.innerHeight || document.body.clientHeight;
+	var width = document.body.clientWidth;
+	var height = document.body.clientHeight;
 	var gameRatio = 2 / 3;
 	var windowRatio = width / height;
 
