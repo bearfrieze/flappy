@@ -129,7 +129,7 @@ function Flappy(width, height) {
 		for (var barrier in this.barriers)
 			this.barriers[barrier].draw(context);
 		this.target.draw(context);
-
+		
 		// Particles
 		for (var i = 0; i < this.particles.length; i++) {
 			this.particles[i].draw(context);

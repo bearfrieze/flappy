@@ -8,16 +8,28 @@ function Particle(location, velocity, radius, lifespan, hue, flappy) {
 	this.mass = 0.25;
 	this.hue = hue;
 
+	// Sprite
+	var sprite = this.sprite = document.createElement('canvas');
+	var size = Math.floor(this.radius * 3);
+	sprite.width = size;
+	sprite.height = size;
+	var context = sprite.getContext('2d');
+	context.beginPath();
+	context.arc(
+		this.sprite.width / 2, this.sprite.height / 2,
+		this.radius,
+		0, 2 * Math.PI
+	);
+	context.closePath();
+	context.fillStyle = 'hsl(' + this.hue + ', 75%, 75%)';
+	context.fill();
+
 	this.draw = function(context) {
-		context.beginPath();
-		context.arc(
-			Math.round(this.location.x), Math.round(this.location.y),
-			this.radius,
-			0, 2 * Math.PI
+		context.drawImage(
+			this.sprite,
+			Math.round(this.location.x - this.sprite.width / 2),
+			Math.round(this.location.y - this.sprite.height / 2)
 		);
-		context.closePath();
-		context.fillStyle = 'hsl(' + this.hue + ', 75%, 75%)';
-		context.fill();
 	}
 
 	this.alive = function() {
