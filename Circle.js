@@ -3,7 +3,7 @@ function Circle() {}
 Circle.prototype.step = function(frames) {
 
 	// Apply gravity to velocity
-	var gravity = flappy.gravity.copy().mult(this.mass).mult(frames);
+	var gravity = this.flappy.gravity.copy().mult(this.mass).mult(frames);
 	if (this.below()) gravity.flipY();
 	this.velocity.add(gravity);
 
@@ -14,7 +14,7 @@ Circle.prototype.step = function(frames) {
 
 Circle.prototype.sideCollide = function() {
 	if (this.location.x - this.radius <= 0 && this.velocity.x < 0) return -1;
-	if (this.location.x + this.radius >= flappy.width && this.velocity.x > 0) return 1;
+	if (this.location.x + this.radius >= this.flappy.width && this.velocity.x > 0) return 1;
 	return 0;
 }
 
