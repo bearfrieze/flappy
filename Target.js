@@ -7,7 +7,7 @@ function Target(radius) {
 		var delta = stop.copy().sub(start);
 		this.location.x = start.x + this.radius + Math.random() * (delta.x - this.radius * 2);
 		this.location.y = start.y + this.radius + Math.random() * (delta.y - this.radius * 2);
-		this.hue = Math.round(Math.floor(Math.random() * 6) * 360 / 6);
+		this.hue = Math.random() * 360;
 	}
 
 	this.draw = function(context) {

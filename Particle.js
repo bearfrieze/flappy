@@ -6,7 +6,7 @@ function Particle(location, velocity, radius, lifespan, hue, flappy) {
 	this.timer = Date.now() + lifespan * 1000;
 	this.flappy = flappy;
 	this.mass = 0.25;
-	this.hue = hue;
+	this.hue = Math.round(hue / this.hueStep) * this.hueStep;
 
 	// Test if sprite exists
 	if (!(radius in this.sprites)) this.sprites[radius] = [];
@@ -46,3 +46,4 @@ function Particle(location, velocity, radius, lifespan, hue, flappy) {
 Particle.prototype = Object.create(Circle.prototype);
 
 Particle.prototype.sprites = [];
+Particle.prototype.hueStep = 360 / 12;

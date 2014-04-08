@@ -174,7 +174,7 @@ function Flappy(width, height) {
 				var speed = Math.random() * bird.radius * 0.5;
 				var velocity = new Vector(Math.cos(angle) * speed, Math.sin(angle) * speed);
 				var lifespan = 1.5 + Math.random() * 1;
-				var hue = (newHighscore) ? Math.round(Math.floor(Math.random() * 6) * 360 / 6) : target.hue;
+				var hue = (newHighscore) ? Math.random() * 360 : target.hue;
 				var particle = new Particle(target.location.copy(), velocity, bird.radius / 4, lifespan, hue, this);
 				this.particles.push(particle);
 			}
