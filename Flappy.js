@@ -172,12 +172,16 @@ function Flappy(width, height) {
 
 			// Spawn particles
 			var n = (newHighscore) ? 200 : 100;
+			var halfPi = (Math.PI / 2);
+			var sinusRandom = function() {
+				return 1 - Math.sin(halfPi + Math.random() * halfPi);
+			};
 			for (var i = 0; i < n; i++) {
 				var angle = (Math.random() * 360) * Math.PI / 180;
 				var speed = Math.random() * bird.radius * 0.5;
 				var velocity = new Vector(Math.cos(angle) * speed, Math.sin(angle) * speed);
-				var lifespan = 1.5 + Math.random() * 1;
-				var hue = (newHighscore) ? Math.random() * 360 : target.hue;
+				var lifespan = sinusRandom() * 3;
+				var hue = (newHighscore) ? Math.random() * 360 : target.hue - 30 + Math.random() * 60;
 				var particle = new Particle(target.location.copy(), velocity, bird.radius / 4, lifespan, hue, this);
 				this.particles.push(particle);
 			}
