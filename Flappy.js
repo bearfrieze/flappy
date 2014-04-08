@@ -99,29 +99,13 @@ function Flappy(width, height) {
 		var timer = Date.now();
 
 		var context = this.context;
+		var lineOffset = context.lineWidth / 2;
 		context.clearRect(0, 0, this.width, this.height);
-
-		// Particles and target
-		for (var i = 0; i < this.particles.length; i++) {
-			this.particles[i].draw(context);
-		}
-		this.target.draw(context);
-
-		var offset = context.lineWidth / 2;
-
-		// Border left and right
-		context.beginPath();
-		context.moveTo(offset, 0);
-		context.lineTo(offset, this.height);
-		context.moveTo(this.width - offset, 0);
-		context.lineTo(this.width - offset, this.height);
-		context.closePath();
-		context.stroke();
 
 		// Mirror-line, dashed
 		var step = context.lineWidth * 6;
 		var gap = step * (5 / 8);
-		var y = this.height / 2 - offset;
+		var y = this.height / 2 - lineOffset;
 		var x = -gap;
 		context.beginPath();
 		while (x < this.width) {
@@ -134,6 +118,21 @@ function Flappy(width, height) {
 		// Score
 		context.fillStyle = 'white';
 		context.fillText(this.score + "/" + this.highscore, this.width / 2, this.height / 4);
+
+		// Particles and target
+		for (var i = 0; i < this.particles.length; i++) {
+			this.particles[i].draw(context);
+		}
+		this.target.draw(context);
+
+		// Border left and right
+		context.beginPath();
+		context.moveTo(lineOffset, 0);
+		context.lineTo(lineOffset, this.height);
+		context.moveTo(this.width - lineOffset, 0);
+		context.lineTo(this.width - lineOffset, this.height);
+		context.closePath();
+		context.stroke();
 
 		// Bird
 		this.bird.draw(context);
