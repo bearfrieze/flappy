@@ -101,6 +101,12 @@ function Flappy(width, height) {
 		var context = this.context;
 		context.clearRect(0, 0, this.width, this.height);
 
+		// Particles and target
+		for (var i = 0; i < this.particles.length; i++) {
+			this.particles[i].draw(context);
+		}
+		this.target.draw(context);
+
 		var offset = context.lineWidth / 2;
 
 		// Border left and right
@@ -129,16 +135,12 @@ function Flappy(width, height) {
 		context.fillStyle = 'white';
 		context.fillText(this.score + "/" + this.highscore, this.width / 2, this.height / 4);
 
-		// Objects
+		// Bird
 		this.bird.draw(context);
+
+		// Barriers
 		for (var barrier in this.barriers)
 			this.barriers[barrier].draw(context);
-		this.target.draw(context);
-		
-		// Particles
-		for (var i = 0; i < this.particles.length; i++) {
-			this.particles[i].draw(context);
-		}
 
 		this.timers.draw.push(Date.now() - timer);
 	}
