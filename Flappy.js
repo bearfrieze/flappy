@@ -41,17 +41,20 @@ function Flappy(width, height) {
 	// Context
 	var context = this.context = canvas.getContext('2d');
 	context.strokeStyle = 'white';
-	context.lineWidth = '1';
+	context.lineWidth = Math.round(width / 150);
+	context.font = width / 10 + 'px Menlo, Monaco, Consolas, "Lucida Console", monospace';
+	context.textAlign = 'center';
+	context.textBaseline = 'middle';
 
 	// Bird
 	var location = new Vector(width / 2, height * 0.4);
 	var velocity = new Vector(width / 150, 0);
-	var radius = width / 50;
+	var radius = width / 35;
 	var bird = this.bird = new Bird(location, velocity, radius, this);
 
 	// Barriers
 	var barrierHeight = Math.round(height / 3);
-	var barrierThickness = Math.round(width / 70);
+	var barrierThickness = Math.round(width / 50);
 	var barriers = {
 		left: new Barrier(
 			new Vector(0, 0),
@@ -73,7 +76,7 @@ function Flappy(width, height) {
 	this.barriers = barriers;
 
 	// Target
-	var target = this.target = new Target(width / 20);
+	var target = this.target = new Target(width / 15);
 
 	// Keyboard listener
 	document.addEventListener('keydown', function(event) {
@@ -98,33 +101,33 @@ function Flappy(width, height) {
 		var context = this.context;
 		context.clearRect(0, 0, this.width, this.height);
 
+		var offset = context.lineWidth / 2;
+
 		// Border left and right
 		context.beginPath();
-		context.moveTo(0.5, 0.5);
-		context.lineTo(0.5, this.height);
-		context.moveTo(this.width - 0.5, 0.5);
-		context.lineTo(this.width - 0.5, this.height);
+		context.moveTo(offset, 0);
+		context.lineTo(offset, this.height);
+		context.moveTo(this.width - offset, 0);
+		context.lineTo(this.width - offset, this.height);
 		context.closePath();
 		context.stroke();
 
-		// Score
-		context.font =  width / 15 + 'px Menlo, monospace';
-		context.textAlign = 'center';
-		context.textBaseline = 'bottom';
-		context.fillStyle = 'white';
-		context.fillText(this.score + "/" + this.highscore, this.width / 2, this.height / 5);
-
 		// Mirror-line, dashed
-		var step = this.width / 50;
-		var y = Math.floor(this.height / 2) + 0.5;
-		var x = -step;
+		var step = context.lineWidth * 6;
+		var gap = step * (5 / 8);
+		var y = this.height / 2 - offset;
+		var x = -gap;
 		context.beginPath();
 		while (x < this.width) {
-			context.moveTo(x += step, y);
+			context.moveTo(x += gap, y);
 			context.lineTo(x += step, y);
 		}
 		context.closePath();
 		context.stroke();
+
+		// Score
+		context.fillStyle = 'white';
+		context.fillText(this.score + "/" + this.highscore, this.width / 2, this.height / 4);
 
 		// Objects
 		this.bird.draw(context);
