@@ -24,8 +24,10 @@ function Flappy(width, height) {
 			// Compute accumulated
 			var accumulated = 0;
 			for (var i = 0; i < timers[key].length; i++) accumulated += timers[key][i];
+			// Compute average
+			var average = (accumulated / timers[key].length).toFixed(2);
 			// Output
-			console.log(key + ' | percentile: ' + percentile + ', accumulated: ' + accumulated);
+			console.log(key + ' | average: ' + average + ', percentile: ' + percentile + ', accumulated: ' + accumulated);
 		}
 	};
 	setTimeout(function() {performance(timers)}, 10000);
@@ -166,13 +168,13 @@ function Flappy(width, height) {
 			var newHighscore = this.score === this.highscore + 1;
 
 			// Spawn particles
-			var n = (newHighscore) ? 90 : 30;
+			var n = (newHighscore) ? 200 : 100;
 			for (var i = 0; i < n; i++) {
 				var angle = (Math.random() * 360) * Math.PI / 180;
 				var speed = Math.random() * bird.radius * 0.5;
 				var velocity = new Vector(Math.cos(angle) * speed, Math.sin(angle) * speed);
 				var lifespan = 1.5 + Math.random() * 1;
-				var hue = (newHighscore) ? Math.random() * 360 : target.hue;
+				var hue = (newHighscore) ? Math.round(Math.floor(Math.random() * 6) * 360 / 6) : target.hue;
 				var particle = new Particle(target.location.copy(), velocity, bird.radius / 4, lifespan, hue, this);
 				this.particles.push(particle);
 			}

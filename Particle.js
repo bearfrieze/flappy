@@ -8,21 +8,27 @@ function Particle(location, velocity, radius, lifespan, hue, flappy) {
 	this.mass = 0.25;
 	this.hue = hue;
 
-	// Sprite
-	var sprite = this.sprite = document.createElement('canvas');
-	var size = Math.floor(this.radius * 3);
-	sprite.width = size;
-	sprite.height = size;
-	var context = sprite.getContext('2d');
-	context.beginPath();
-	context.arc(
-		this.sprite.width / 2, this.sprite.height / 2,
-		this.radius,
-		0, 2 * Math.PI
-	);
-	context.closePath();
-	context.fillStyle = 'hsl(' + this.hue + ', 75%, 75%)';
-	context.fill();
+	// Test if sprite exists
+	if (!(radius in this.sprites)) this.sprites[radius] = [];
+	if (!(hue in this.sprites[radius])) {
+		// Generate sprite
+		var sprite = this.sprites[radius][hue] = document.createElement('canvas');
+		var size = Math.floor(this.radius * 3);
+		sprite.width = size;
+		sprite.height = size;
+		var context = sprite.getContext('2d');
+		context.beginPath();
+		context.arc(
+			sprite.width / 2, sprite.height / 2,
+			this.radius,
+			0, 2 * Math.PI
+		);
+		context.closePath();
+		context.fillStyle = 'hsl(' + this.hue + ', 75%, 75%)';
+		context.fill();
+	}
+
+	this.sprite = this.sprites[radius][hue];
 
 	this.draw = function(context) {
 		context.drawImage(
@@ -38,3 +44,5 @@ function Particle(location, velocity, radius, lifespan, hue, flappy) {
 }
 
 Particle.prototype = Object.create(Circle.prototype);
+
+Particle.prototype.sprites = [];
