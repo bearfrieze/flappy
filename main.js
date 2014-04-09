@@ -2,6 +2,7 @@ window.onload = function() {
 
 	// Background color
 	document.body.style.background = '#333';
+	document.body.style.position = 'relative';
 
 	// Game dimensions
 	var width = window.innerWidth || document.body.clientWidth;
@@ -27,8 +28,8 @@ window.onload = function() {
 	flappy.canvas.style.position = 'absolute';
 	flappy.canvas.style.top = '50%';
 	flappy.canvas.style.left = '50%';
-	flappy.canvas.style.marginLeft = -width / 2;
-	flappy.canvas.style.marginTop = -height / 2;
+	flappy.canvas.style.marginLeft = -width / 2 + 'px';
+	flappy.canvas.style.marginTop = -height / 2 + 'px';
 
 	// Append
 	document.body.appendChild(flappy.canvas);
