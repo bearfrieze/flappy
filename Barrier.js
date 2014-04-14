@@ -3,6 +3,7 @@ function Barrier(start, stop) {
 	this.start = start;
 	this.stop = stop;
 	this.destination = start.y;
+	this.dimensions = stop.copy().sub(start);
 
 	this.randomY = function(min, max) {
 		var height = this.stop.y - this.start.y;
@@ -33,20 +34,21 @@ function Barrier(start, stop) {
 		// Using this method: http://stackoverflow.com/a/402010
 
 		var circle = bird;
-		var center = this.start.copy().add(this.stop).div(2);
-		var distance = circle.location.copy().sub(center).abs();
-		var dimensions = this.stop.copy().sub(this.start);
+		var center = this.start.kopi().add(this.stop).div(2);
+		var distance = circle.location.kopi().sub(center).abs();
+		center.release();
 
 		// Return false if circle is outside of rectangle
-	    if (distance.x > (dimensions.x / 2) + circle.radius) return false;
-	    if (distance.y > (dimensions.y / 2) + circle.radius) return false;
+		if (distance.x > (this.dimensions.x / 2) + circle.radius) {distance.release(); return false;}
+		if (distance.y > (this.dimensions.y / 2) + circle.radius) {distance.release(); return false;}
 
-	    // Return true if circle center is inside of rectangle
-	    if (distance.x <= dimensions.x / 2) return true;
-	    if (distance.y <= dimensions.y / 2) return true;
+		// Return true if circle center is inside of rectangle
+		if (distance.x <= this.dimensions.x / 2) {distance.release(); return true;}
+		if (distance.y <= this.dimensions.y / 2) {distance.release(); return true;}
 
-	    // Check wether circle is in reach of corners
-	    var cornerDistance = distance.dist(dimensions.copy().div(2));
-	    return cornerDistance <= circle.radius;
+		// Check wether circle is in reach of corners
+		var cornerDistance = distance.dist(this.dimensions.div(2));
+		distance.release();
+		return cornerDistance <= circle.radius;
 	}
 }

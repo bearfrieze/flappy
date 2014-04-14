@@ -1,34 +1,24 @@
-function Particle(location, velocity, radius, lifespan, hue, flappy) {
-	
-	this.location = location;
-	this.velocity = velocity;
-	this.radius = radius;
-	this.timer = Date.now() + lifespan * 1000;
-	this.flappy = flappy;
-	this.mass = 0.25;
-	this.hue = Math.round(hue / this.hueStep) * this.hueStep;
+function Particle() {
 
-	// Test if sprite exists
-	if (!(radius in this.sprites)) this.sprites[radius] = [];
-	if (!(hue in this.sprites[radius])) {
-		// Generate sprite
-		var sprite = this.sprites[radius][hue] = document.createElement('canvas');
-		var size = Math.floor(this.radius * 3);
-		sprite.width = size;
-		sprite.height = size;
-		var context = sprite.getContext('2d');
-		context.beginPath();
-		context.arc(
-			sprite.width / 2, sprite.height / 2,
-			this.radius,
-			0, 2 * Math.PI
-		);
-		context.closePath();
-		context.fillStyle = 'hsl(' + this.hue + ', 75%, 75%)';
-		context.fill();
+	this.render = function() {
+		if (!(this.hue in this.sprites)) {
+			var sprite = this.sprites[this.hue] = document.createElement('canvas');
+			var size = Math.floor(this.radius * 3);
+			sprite.width = size;
+			sprite.height = size;
+			var context = sprite.getContext('2d');
+			context.beginPath();
+			context.arc(
+				sprite.width / 2, sprite.height / 2,
+				this.radius,
+				0, 2 * Math.PI
+			);
+			context.closePath();
+			context.fillStyle = 'hsl(' + this.hue + ', 75%, 75%)';
+			context.fill();
+		}
+		this.sprite = this.sprites[this.hue];
 	}
-
-	this.sprite = this.sprites[radius][hue];
 
 	this.draw = function(context) {
 		context.drawImage(
@@ -47,3 +37,22 @@ Particle.prototype = Object.create(Circle.prototype);
 
 Particle.prototype.sprites = [];
 Particle.prototype.hueStep = 360 / 12;
+
+Particle.prototype.pool = new Pool(Particle);
+Particle.prototype.get = function(location, velocity, radius, lifespan, hue, flappy) {
+	var particle = this.pool.get();
+	particle.location = location;
+	particle.velocity = velocity;
+	particle.radius = radius;
+	particle.timer = Date.now() + lifespan * 1000;
+	particle.hue = Math.round(hue / this.hueStep) * this.hueStep;
+	particle.flappy = flappy;
+	particle.mass = 0.25;
+	particle.render();
+	return particle;
+}
+Particle.prototype.release = function() {
+	this.location.release();
+	this.velocity.release();
+	this.pool.release(this);
+}

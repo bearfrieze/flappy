@@ -3,13 +3,15 @@ function Circle() {}
 Circle.prototype.step = function(frames) {
 
 	// Apply gravity to velocity
-	var gravity = this.flappy.gravity.copy().mult(this.mass).mult(frames);
+	var gravity = this.flappy.gravity.kopi().mult(this.mass).mult(frames);
 	if (this.below()) gravity.flipY();
 	this.velocity.add(gravity);
+	gravity.release();
 
 	// Apply velocity to location
-	var velocity = this.velocity.copy().mult(frames);
+	var velocity = this.velocity.kopi().mult(frames);
 	this.location.add(velocity);
+	velocity.release();
 }
 
 Circle.prototype.sideCollide = function() {

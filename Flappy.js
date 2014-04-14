@@ -8,30 +8,6 @@ function Flappy(width, height) {
 	this.particles = [];
 	this.gravity = new Vector(0, height / 2000);
 
-	// Performance
-	var timers = this.timers = {
-		draw: [],
-		step: []
-	};
-	var performance = function(timers) {
-		for (var key in timers) {
-			// Compute 90th percentile average
-			var percentile = 0;
-			timers[key].sort(function(a,b){return b-a}); // Sort descending
-			var interval = Math.round(timers[key].length * 0.1);
-			for (var i = 0; i < interval; i++) percentile += timers[key][i];
-			percentile = (percentile / interval).toFixed(2);
-			// Compute accumulated
-			var accumulated = 0;
-			for (var i = 0; i < timers[key].length; i++) accumulated += timers[key][i];
-			// Compute average
-			var average = (accumulated / timers[key].length).toFixed(2);
-			// Output
-			console.log(key + ' | average: ' + average + ', percentile: ' + percentile + ', accumulated: ' + accumulated);
-		}
-	};
-	setTimeout(function() {performance(timers)}, 10000);
-
 	// Canvas
 	var canvas = this.canvas = document.createElement('canvas');
 	canvas.width = this.width;
@@ -96,8 +72,6 @@ function Flappy(width, height) {
 
 	this.draw = function() {
 
-		var timer = Date.now();
-
 		var context = this.context;
 		var lineOffset = context.lineWidth / 2;
 		context.clearRect(0, 0, this.width, this.height);
@@ -140,13 +114,9 @@ function Flappy(width, height) {
 		// Barriers
 		for (var barrier in this.barriers)
 			this.barriers[barrier].draw(context);
-
-		this.timers.draw.push(Date.now() - timer);
 	}
 
 	this.step = function() {
-
-		var timer = Date.now();
 
 		var bird = this.bird;
 
@@ -177,15 +147,19 @@ function Flappy(width, height) {
 			var sinusRandom = function() {
 				return 1 - Math.sin(halfPi + Math.random() * halfPi);
 			};
+
 			for (var i = 0; i < n; i++) {
+				var location = target.location.kopi();
 				var angle = (Math.random() * 360) * Math.PI / 180;
 				var speed = Math.random() * bird.radius * 0.5;
-				var velocity = new Vector(Math.cos(angle) * speed, Math.sin(angle) * speed);
+				var velocity = Vector.prototype.get(Math.cos(angle) * speed, Math.sin(angle) * speed);
 				var lifespan = sinusRandom() * 3;
 				var hue = (newHighscore) ? Math.random() * 360 : target.hue - 30 + Math.random() * 60;
-				var particle = new Particle(target.location.copy(), velocity, bird.radius / 4, lifespan, hue, this);
+				var particle = Particle.prototype.get(location, velocity, bird.radius / 4, lifespan, hue, this);
 				this.particles.push(particle);
 			}
+
+			console.log(Vector.prototype.pool.size);
 
 			// Random target location
 			if (bird.location.y < this.height / 2)
@@ -219,12 +193,12 @@ function Flappy(width, height) {
 				particle.step(frames);
 			} else {
 				// Delete particle if dead
-				temp = this.particles.pop();
-				if (this.particles.length > 0) this.particles[i] = temp;
+				temp = this.particles[this.particles.length - 1];
+				this.particles[this.particles.length - 1] = particle;
+				this.particles[i] = temp;
+				this.particles.pop().release();
 			}
 		}
-
-		this.timers.step.push(Date.now() - timer);
 	}
 
 	this.reset = function() {

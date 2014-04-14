@@ -47,4 +47,19 @@ function Vector(x, y) {
 	this.copy = function() {
 		return new Vector(this.x, this.y);
 	}
+
+	this.kopi = function() {
+		return this.get(this.x, this.y);
+	}
+}
+
+Vector.prototype.pool = new Pool(Vector);
+Vector.prototype.get = function(x, y) {
+	var vector = this.pool.get();
+	vector.x = x;
+	vector.y = y;
+	return vector;
+}
+Vector.prototype.release = function() {
+	this.pool.release(this);
 }
