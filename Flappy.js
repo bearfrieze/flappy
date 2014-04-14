@@ -159,8 +159,6 @@ function Flappy(width, height) {
 				this.particles.push(particle);
 			}
 
-			console.log(Vector.prototype.pool.size);
-
 			// Random target location
 			if (bird.location.y < this.height / 2)
 				target.random(
