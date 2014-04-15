@@ -54,21 +54,13 @@ function Flappy(width, height) {
 	// Target
 	var target = this.target = new Target(width / 15);
 
-	// Keyboard listener
-	document.addEventListener('keydown', function(event) {
-	    if(event.keyCode == 32) bird.flap();
-	});
-
-	// Touch/click listener
-	if ('ontouchstart' in document.documentElement) {
-		canvas.addEventListener('touchstart', function(event) {
-			bird.flap();
-		}, false);
-	} else {
-		canvas.addEventListener('mousedown', function(event) {
-			bird.flap();
-		}, false);
-	}
+	// Listeners
+	var that = this;
+	document.addEventListener('keydown', function(event) {if(event.keyCode == 32) bird.flap(that);});
+	if ('ontouchstart' in document.documentElement)
+		canvas.addEventListener('touchstart', function(event) {bird.flap(that);}, false);
+	else
+		canvas.addEventListener('mousedown', function(event) {bird.flap(that);}, false);
 
 	this.draw = function() {
 
@@ -129,7 +121,7 @@ function Flappy(width, height) {
 		}
 
 		// Left and right collision
-		var collide = bird.sideCollide();
+		var collide = bird.sideCollide(this);
 		if (collide != 0) bird.reverse();
 		if (collide > 0) this.barriers.left.randomY(0, this.height);
 		if (collide < 0) this.barriers.right.randomY(0, this.height);
@@ -139,36 +131,36 @@ function Flappy(width, height) {
 		if (target.colliding(bird)) {
 
 			this.score++;
-			var newHighscore = this.score === this.highscore + 1;
 
 			// Spawn particles
+			var newHighscore = this.score === this.highscore + 1;
 			var n = (newHighscore) ? 200 : 100;
-			var halfPi = (Math.PI / 2);
-			var sinusRandom = function() {
-				return 1 - Math.sin(halfPi + Math.random() * halfPi);
-			};
-
+			var angle = 0;
+			var speed = 0;
 			for (var i = 0; i < n; i++) {
-				var location = target.location.kopi();
-				var angle = (Math.random() * 360) * Math.PI / 180;
-				var speed = Math.random() * bird.radius * 0.5;
-				var velocity = Vector.prototype.get(Math.cos(angle) * speed, Math.sin(angle) * speed);
-				var lifespan = sinusRandom() * 3;
-				var hue = (newHighscore) ? Math.random() * 360 : target.hue - 30 + Math.random() * 60;
-				var particle = Particle.prototype.get(location, velocity, bird.radius / 4, lifespan, hue, this);
+				var particle = Particle.prototype.get();
+				particle.location = target.location.kopi();
+				angle = (Math.random() * 360) * Math.PI / 180;
+				speed = Math.random() * bird.radius * 0.5;
+				particle.velocity = Vector.prototype.get(Math.cos(angle) * speed, Math.sin(angle) * speed);
+				particle.radius = bird.radius / 4;
+				particle.timer = Date.now() + this.sinusRandom() * 3 * 1000;
+				particle.hue = (newHighscore) ? Math.random() * 360 : target.hue - 30 + Math.random() * 60;
+				particle.hue = Math.round(particle.hue / particle.hueStep) * particle.hueStep;
+				particle.render();
 				this.particles.push(particle);
 			}
 
 			// Random target location
 			if (bird.location.y < this.height / 2)
 				target.random(
-					new Vector(0, this.height / 2),
-					new Vector(this.width, this.height)
+					Vector.prototype.get(0, this.height / 2),
+					Vector.prototype.get(this.width, this.height)
 				);
 			else
 				target.random(
-					new Vector(0, 0),
-					new Vector(this.width, this.height / 2)
+					Vector.prototype.get(0, 0),
+					Vector.prototype.get(this.width, this.height / 2)
 				);
 		}
 		
@@ -176,7 +168,7 @@ function Flappy(width, height) {
 		this.lastStep = Date.now();
 
 		// Step bird
-		bird.step(frames);
+		bird.step(this, frames);
 
 		// Step barriers
 		this.barriers.left.step(frames);
@@ -186,9 +178,9 @@ function Flappy(width, height) {
 		var temp = null;
 		for (var i = this.particles.length - 1; i >= 0; i--) {
 			var particle = this.particles[i];
-			if (particle.sideCollide() != 0) particle.reverse();
+			if (particle.sideCollide(this) != 0) particle.reverse();
 			if (particle.alive()) {
-				particle.step(frames);
+				particle.step(this, frames);
 			} else {
 				// Delete particle if dead
 				temp = this.particles[this.particles.length - 1];
@@ -235,6 +227,10 @@ function Flappy(width, height) {
 			if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
 		}
 		return '';
+	}
+
+	this.sinusRandom = function() {
+		return 1 - Math.sin(Math.PI / 2 + Math.random() * (Math.PI / 2));
 	}
 
 	this.reset();

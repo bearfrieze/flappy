@@ -8,6 +8,8 @@ function Target(radius) {
 		this.location.x = start.x + this.radius + Math.random() * (delta.x - this.radius * 2);
 		this.location.y = start.y + this.radius + Math.random() * (delta.y - this.radius * 2);
 		this.hue = Math.random() * 360;
+		start.release();
+		stop.release();
 	}
 
 	this.draw = function(context) {
