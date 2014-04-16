@@ -34,14 +34,4 @@ window.onload = function() {
 	// Append
 	document.body.appendChild(flappy.canvas);
 	flappy.draw();
-
-	// Loop
-	function loop(stamp) {
-		flappy.step();
-		flappy.draw();
-		requestAnimationFrame(loop);
-	}
-
-	// Start loop
-	requestAnimationFrame(loop);
 };

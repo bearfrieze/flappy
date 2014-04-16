@@ -3,10 +3,11 @@ function Bird(location, velocity, radius) {
 	this.velocity = velocity;
 	this.radius = radius;
 	this.lastFlap = 0;
-	this.mass = 1;
 }
 
 Bird.prototype = Object.create(Circle.prototype);
+
+Bird.prototype.mass = 1;
 
 Bird.prototype.draw = function(context) {
 	context.beginPath();
@@ -18,7 +19,6 @@ Bird.prototype.draw = function(context) {
 		0, 2 * Math.PI
 	);
 	context.closePath();
-	context.fillStyle = 'white';
 	context.fill();
 }
 
